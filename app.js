@@ -7,7 +7,12 @@ const fs = require("fs");
 const app = express();
 app.use(bodyparser.json());
 const port = 3000;
-const { program } = require('commander')
+const { program } = require("commander");
+
+// WARNING !!
+// Problème d'asyncrone => les fonctions se font en même temps et non à la suite
+// Les filters se lancent en meme temps que la vérification, donc meme si il y a une erreur les filters se lancent ..
+// Il faudrait retravailler les fonctions avec des promesses ...
 
 // Lancement du service
 app.listen(port, () => {
@@ -15,26 +20,19 @@ app.listen(port, () => {
   try {
     checkConfig();
     displayFilter();
+    runFilters();
   } catch (e) {
     console.log(e);
   }
-  runFilters();
 });
 
 const filterFolder = "./filters/";
 const configFilePath = "config-filters.json";
 
-const filter1 = require("./filters/filter1");
-
 const runFilters = () => {
-  //console.log(filter1());
-  fs.readFile(configFilePath, (err, data) => {
-    const fileContent = JSON.parse(data.toString("utf8"));
-    fileContent.steps;
-  });
-  const steps = getSteps()
-  const step0 = steps[0]
-  doNextFunction(step0)
+  const steps = getSteps();
+  const step0 = steps[0];
+  doNextFunction(step0, ["hello.txt"]);
 };
 
 const checkFilter = (files) => {
@@ -124,15 +122,20 @@ const checkConfig = () => {
   }
 };
 
-const doNextFunction = (step) => {
+const doNextFunction = (step, input) => {
   const filter = require(`${filterFolder}${step[1].filter}.js`);
   if (!step[1].next) {
-    return filter()
+    return filter(input, step[1].params);
   }
-  filter();
+  filter(input, step[1].params);
+
   const steps = getSteps();
+
+  input[0] = filter(input, step[1].params);
+
   doNextFunction(
-    steps.find((_step) => _step[0] == step[1].next)
+    steps.find((_step) => _step[0] == step[1].next),
+    input
   );
 };
 

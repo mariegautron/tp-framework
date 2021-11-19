@@ -1,18 +1,23 @@
 {
-    "steps": {
-        "1": {
-            "filter": "filter1",
-            "params": [],
-            "next": "3"
-        },
-        "2": {
-            "filter": "filter2",
-            "params": []
-        },
-        "3": {
-            "filter": "filter3",
-            "params": [],
-            "next": "2"
-        }
+  "steps": {
+    "1": {
+      "filter": "read",
+      "params": [],
+      "next": "2"
+    },
+    "2": {
+      "filter": "capitalize",
+      "params": [],
+      "next": "3"
+    },
+    "3": {
+      "filter": "reverse",
+      "params": [],
+      "next": "4"
+    },
+    "4": {
+      "filter": "write",
+      "params": ["hello2.txt"]
     }
+  }
 }

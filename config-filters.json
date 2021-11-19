@@ -3,7 +3,7 @@
     "1": {
       "filter": "filter1",
       "params": [],
-      "next": "12"
+      "next": "2"
     },
     "2": {
       "filter": "filter2",

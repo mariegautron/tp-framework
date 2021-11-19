@@ -1,1 +1,4 @@
-hello world
+module.exports = (input) => {
+    console.log("salut");
+  };
+  

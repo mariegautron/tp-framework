@@ -11,8 +11,12 @@ const port = 3000;
 // Lancement du service
 app.listen(port, () => {
   console.log(`Service listening at http://localhost:${port}`);
-  checkConfig();
-  displayFilter();
+  try {
+    checkConfig();
+    displayFilter();
+  } catch (e) {
+    console.log(e);
+  }
   runFilters();
 });
 
@@ -22,7 +26,14 @@ const configFilePath = "config-filters.json";
 const filter1 = require("./filters/filter1");
 
 const runFilters = () => {
-  console.log(filter1());
+  //console.log(filter1());
+  fs.readFile(configFilePath, (err, data) => {
+    const fileContent = JSON.parse(data.toString("utf8"));
+    fileContent.steps;
+  });
+  const steps = getSteps()
+  const step0 = steps[0]
+  doNextFunction(step0)
 };
 
 const checkFilter = (files) => {
@@ -110,4 +121,25 @@ const checkConfig = () => {
       }
     });
   }
+};
+
+const doNextFunction = (step) => {
+  const filter = require(`${filterFolder}${step[1].filter}.js`);
+  if (!step[1].next) {
+    return filter()
+  }
+  filter();
+  const steps = getSteps();
+  doNextFunction(
+    steps.find((_step) => _step[0] == step[1].next)
+  );
+};
+
+const getSteps = () => {
+  const configFile = fs.readFileSync(configFilePath);
+  const configParse = JSON.parse(configFile.toString("utf8"));
+  return Object.keys(configParse.steps).map((key) => [
+    key,
+    configParse.steps[key],
+  ]);
 };

@@ -1,0 +1,18 @@
+{
+    "steps": {
+        "1": {
+            "filter": "filter1",
+            "params": [],
+            "next": "2"
+        },
+        "2": {
+            "filter": "filter2",
+            "params": [],
+            "next": "3"
+        },
+        "3":{
+            "filter": "filter3",
+            "params": []
+        }
+    }
+}
